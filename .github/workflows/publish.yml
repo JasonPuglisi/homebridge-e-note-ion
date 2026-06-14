@@ -1,11 +1,12 @@
 name: Publish
 
-# Publishes to npm when a GitHub Release is published. Create a release whose
-# tag matches the package.json version (e.g. tag `v0.1.0` for version 0.1.0).
+# Publishes to npm when a GitHub Release is published, gated on the release tag
+# matching package.json. Uses npm trusted publishing (OIDC) — no NPM_TOKEN
+# secret required, and provenance is generated automatically.
 #
-# Requires an `NPM_TOKEN` repository secret — an npm **Automation** access token
-# with publish rights (Automation tokens bypass 2FA in CI). Provenance is
-# attached via OIDC (`id-token: write`), so installs can verify the build origin.
+# One-time setup (run locally, requires npm login + 2FA):
+#   npm trust github homebridge-e-note-ion \
+#     --repo JasonPuglisi/homebridge-e-note-ion --file publish.yml --allow-publish
 
 on:
   release:
@@ -13,7 +14,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write
+  id-token: write # required for OIDC trusted publishing
 
 jobs:
   publish:
@@ -26,6 +27,9 @@ jobs:
           node-version: 22.x
           registry-url: https://registry.npmjs.org
 
+      # Node 22.x ships npm 10.x; trusted publishing (OIDC) needs npm >= 11.5.1.
+      - run: npm install -g npm@latest
+
       - name: Verify tag matches package version
         run: |
           PKG="$(node -p "require('./package.json').version")"
@@ -37,6 +41,4 @@ jobs:
 
       - run: npm ci
 
-      - run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm publish --access public
