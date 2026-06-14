@@ -1,7 +1,5 @@
 # homebridge-e-note-ion
 
-> — *Claude Code* (scaffold)
-
 A [Homebridge](https://homebridge.io/) plugin that exposes an
 [e-note-ion](https://github.com/JasonPuglisi/e-note-ion) Vestaboard scheduler's
 **Quiet** and **Public** modes as switches in Apple Home — grouped under a single
@@ -79,8 +77,8 @@ that leaves your network, front e-note-ion with TLS (see its
 
 ## Notes
 
-- This is an early scaffold (v0.1.0). Apple's Home app may render the two switches
-  as separate tiles that remain grouped under the one Vestaboard accessory.
+- Apple's Home app may render the two switches as separate tiles that remain
+  grouped under the one Vestaboard accessory.
 - Issues and PRs: https://github.com/JasonPuglisi/homebridge-e-note-ion/issues
 
 ## License
