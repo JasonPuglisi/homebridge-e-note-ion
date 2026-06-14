@@ -1,0 +1,42 @@
+name: Publish
+
+# Publishes to npm when a GitHub Release is published. Create a release whose
+# tag matches the package.json version (e.g. tag `v0.1.0` for version 0.1.0).
+#
+# Requires an `NPM_TOKEN` repository secret — an npm **Automation** access token
+# with publish rights (Automation tokens bypass 2FA in CI). Provenance is
+# attached via OIDC (`id-token: write`), so installs can verify the build origin.
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          registry-url: https://registry.npmjs.org
+
+      - name: Verify tag matches package version
+        run: |
+          PKG="$(node -p "require('./package.json').version")"
+          TAG="${GITHUB_REF_NAME#v}"
+          if [ "$PKG" != "$TAG" ]; then
+            echo "::error::package.json version ($PKG) does not match release tag ($TAG)"
+            exit 1
+          fi
+
+      - run: npm ci
+
+      - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
