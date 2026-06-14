@@ -1,0 +1,45 @@
+{
+  "displayName": "Homebridge e-note-ion",
+  "name": "homebridge-e-note-ion",
+  "version": "0.1.0",
+  "description": "Apple Home control for an e-note-ion Vestaboard scheduler — Quiet and Public toggles grouped on a single device.",
+  "license": "MIT",
+  "author": "Jason Puglisi",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JasonPuglisi/homebridge-e-note-ion.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JasonPuglisi/homebridge-e-note-ion/issues"
+  },
+  "homepage": "https://github.com/JasonPuglisi/homebridge-e-note-ion#readme",
+  "engines": {
+    "node": ">=20",
+    "homebridge": "^1.8.0 || ^2.0.0"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "homebridge-plugin",
+    "vestaboard",
+    "e-note-ion",
+    "apple-home",
+    "homekit"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "homebridge": "^1.8.0",
+    "typescript": "^5.7.0"
+  },
+  "files": [
+    "dist",
+    "config.schema.json",
+    "LICENSE",
+    "README.md"
+  ]
+}

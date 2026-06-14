@@ -1,0 +1,54 @@
+{
+  "pluginAlias": "ENotEion",
+  "pluginType": "platform",
+  "singular": true,
+  "headerDisplay": "Apple Home control for an [e-note-ion](https://github.com/JasonPuglisi/e-note-ion) Vestaboard scheduler. Exposes Quiet and Public toggles on a single Vestaboard device.",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "title": "Name",
+        "type": "string",
+        "default": "e-note-ion",
+        "required": true
+      },
+      "baseUrl": {
+        "title": "Board URL",
+        "type": "string",
+        "required": true,
+        "placeholder": "http://e-note-ion.local:8080",
+        "description": "Base URL of the e-note-ion webhook listener (no trailing slash)."
+      },
+      "schedulerSecret": {
+        "title": "Scheduler secret",
+        "type": "string",
+        "required": true,
+        "description": "The 'scheduler' webhook credential, sent as X-Webhook-Secret when toggling."
+      },
+      "stateSecret": {
+        "title": "State secret",
+        "type": "string",
+        "required": true,
+        "description": "The 'state' webhook credential, used to read current quiet/public state from GET /state."
+      },
+      "pollInterval": {
+        "title": "Poll interval (seconds)",
+        "type": "integer",
+        "default": 300,
+        "minimum": 15,
+        "description": "How often to poll GET /state. Use a long interval (e.g. 300) when push is enabled."
+      },
+      "pushPort": {
+        "title": "Push listener port",
+        "type": "integer",
+        "placeholder": 51828,
+        "description": "Optional. Port for instant push updates from e-note-ion. Set e-note-ion's [homebridge].url to http://<this-host>:<port>/. Leave blank to rely on polling only."
+      },
+      "pushSecret": {
+        "title": "Push secret",
+        "type": "string",
+        "description": "Optional. Shared secret e-note-ion sends with push updates (X-Webhook-Secret). Defaults to the state secret."
+      }
+    }
+  }
+}
