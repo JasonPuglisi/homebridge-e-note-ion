@@ -30,10 +30,16 @@ export class ENotEionClient {
   }
 
   async getModes(): Promise<ModeState | null> {
-    const data = await this.request('GET', '/state', this.stateSecret);
-    if (data && typeof data === 'object' && 'modes' in data) {
-      const modes = (data as { modes: { quiet?: unknown; public?: unknown } }).modes;
-      return { quiet: Boolean(modes.quiet), public: Boolean(modes.public) };
+    // /state returns JSON; the scheduler webhook (setAction) returns a plain
+    // text body ("Discarded"/"Enqueued"), so only this path parses JSON.
+    const text = await this.request('GET', '/state', this.stateSecret);
+    try {
+      const data = JSON.parse(text) as { modes?: { quiet?: unknown; public?: unknown } };
+      if (data && data.modes) {
+        return { quiet: Boolean(data.modes.quiet), public: Boolean(data.modes.public) };
+      }
+    } catch {
+      // Ignore a malformed/non-JSON body — treat as "unknown state".
     }
     return null;
   }
@@ -43,7 +49,7 @@ export class ENotEionClient {
     path: string,
     secret: string,
     body?: unknown,
-  ): Promise<unknown> {
+  ): Promise<string> {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), this.timeoutMs);
     try {
@@ -63,8 +69,7 @@ export class ENotEionClient {
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`);
       }
-      const text = await res.text();
-      return text ? (JSON.parse(text) as unknown) : null;
+      return await res.text();
     } finally {
       clearTimeout(timer);
     }
