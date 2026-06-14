@@ -4,9 +4,12 @@ name: Publish
 # matching package.json. Uses npm trusted publishing (OIDC) — no NPM_TOKEN
 # secret required, and provenance is generated automatically.
 #
-# One-time setup (run locally, requires npm login + 2FA):
+# One-time setup (run locally, requires npm login + 2FA). The --environment must
+# match the `environment:` on the job below, so npm only accepts OIDC publishes
+# from runs in that GitHub Environment:
 #   npm trust github homebridge-e-note-ion \
-#     --repo JasonPuglisi/homebridge-e-note-ion --file publish.yml --allow-publish
+#     --repo JasonPuglisi/homebridge-e-note-ion --file publish.yml \
+#     --environment release --allow-publish
 
 on:
   release:
@@ -19,6 +22,7 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    environment: release
     steps:
       - uses: actions/checkout@v4
 

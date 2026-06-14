@@ -44,8 +44,12 @@ export class ENotEionPlatform implements DynamicPlatformPlugin {
       log,
     );
 
+    // Stay inert until configured: with no baseUrl the platform registers
+    // nothing and does no work, so installing it without configuration cannot
+    // affect Homebridge.
     if (!baseUrl) {
-      this.log.error('No "baseUrl" configured — set the e-note-ion webhook URL in the Homebridge config.');
+      this.log.error('No "baseUrl" configured — add the e-note-ion webhook URL to the plugin config; the platform will not start until then.');
+      return;
     }
 
     this.api.on('didFinishLaunching', () => {
