@@ -1,7 +1,8 @@
-import { CharacteristicValue, PlatformAccessory, Service } from 'homebridge';
+import type { CharacteristicValue, PlatformAccessory, Service } from 'homebridge';
 
-import { ENotEionPlatform } from './platform';
-import { ModeCharacteristic } from './pushServer';
+import { actionFor } from './modes';
+import type { ENotEionPlatform } from './platform';
+import type { ModeCharacteristic } from './pushServer';
 
 /**
  * A single "Vestaboard" accessory exposing two switches — Quiet and Public —
@@ -50,8 +51,7 @@ export class VestaboardAccessory {
 
   private async setMode(mode: ModeCharacteristic, value: CharacteristicValue): Promise<void> {
     const on = value as boolean;
-    const action =
-      mode === 'quiet' ? (on ? 'quiet' : 'wake') : on ? 'public' : 'private';
+    const action = actionFor(mode, on);
     try {
       await this.platform.client.setAction(action);
       this.states[mode] = on;

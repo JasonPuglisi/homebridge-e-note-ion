@@ -1,4 +1,4 @@
-import { Logging } from 'homebridge';
+import type { Logging } from 'homebridge';
 
 export type SchedulerAction = 'quiet' | 'wake' | 'public' | 'private';
 

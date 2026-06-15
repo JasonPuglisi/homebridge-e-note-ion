@@ -1,7 +1,7 @@
 import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
 
-import { API, Logging } from 'homebridge';
+import type { API, Logging } from 'homebridge';
 
 const SCRYPT_PREFIX = 'scrypt:';
 const KEYLEN = 32;
