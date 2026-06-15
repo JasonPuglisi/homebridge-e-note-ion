@@ -9,15 +9,15 @@ export type ModeCharacteristic = 'quiet' | 'public';
  *
  * e-note-ion's `[homebridge].url` points here; on a quiet/public transition it
  * POSTs `{"characteristic": "quiet"|"public", "value": true|false}`. Updates are
- * applied immediately, avoiding poll latency. Authenticated with an optional
- * shared secret via the X-Webhook-Secret header.
+ * applied immediately, avoiding poll latency. Each request is authenticated by
+ * `verify()` against the X-Webhook-Secret header.
  */
 export class PushServer {
   private server?: Server;
 
   constructor(
     private readonly port: number,
-    private readonly secret: string,
+    private readonly verify: (provided: string) => boolean,
     private readonly log: Logging,
     private readonly onUpdate: (characteristic: ModeCharacteristic, value: boolean) => void,
   ) {}
@@ -28,7 +28,8 @@ export class PushServer {
         res.writeHead(405).end('Method Not Allowed');
         return;
       }
-      if (this.secret && req.headers['x-webhook-secret'] !== this.secret) {
+      const provided = req.headers['x-webhook-secret'];
+      if (!this.verify(typeof provided === 'string' ? provided : '')) {
         res.writeHead(401).end('Unauthorized');
         return;
       }
