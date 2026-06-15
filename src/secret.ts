@@ -1,30 +1,45 @@
-import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
+import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
 
 import { API, Logging } from 'homebridge';
 
-const HASH_PREFIX = 'sha256:';
+const SCRYPT_PREFIX = 'scrypt:';
+const KEYLEN = 32;
 
 /** Generate a new random push secret (URL-safe, ~192 bits of entropy). */
 export function generateSecret(): string {
   return randomBytes(24).toString('base64url');
 }
 
-/** Hash a plaintext secret into the stored form (`sha256:<hex>`). */
+/** Hash a plaintext secret for storage: `scrypt:<saltHex>:<keyHex>`. */
 export function hashSecret(plaintext: string): string {
-  return HASH_PREFIX + createHash('sha256').update(plaintext).digest('hex');
+  const salt = randomBytes(16);
+  const key = scryptSync(plaintext, salt, KEYLEN);
+  return `${SCRYPT_PREFIX}${salt.toString('hex')}:${key.toString('hex')}`;
 }
 
-/** True if a stored config value is already a hash produced by hashSecret(). */
+/** True if a stored value is a hash this plugin produced. */
 export function isHash(value: string): boolean {
-  return value.startsWith(HASH_PREFIX);
+  return value.startsWith(SCRYPT_PREFIX);
 }
 
 /** Constant-time check that the `provided` plaintext matches `storedHash`. */
 export function verifySecret(provided: string, storedHash: string): boolean {
-  const a = Buffer.from(hashSecret(provided));
-  const b = Buffer.from(storedHash);
-  return a.length === b.length && timingSafeEqual(a, b);
+  if (!storedHash.startsWith(SCRYPT_PREFIX)) {
+    return false;
+  }
+  const [, saltHex, keyHex] = storedHash.split(':');
+  if (!saltHex || !keyHex) {
+    return false;
+  }
+  const expected = Buffer.from(keyHex, 'hex');
+  let actual: Buffer;
+  try {
+    actual = scryptSync(provided, Buffer.from(saltHex, 'hex'), expected.length);
+  } catch {
+    return false;
+  }
+  return expected.length === actual.length && timingSafeEqual(expected, actual);
 }
 
 /**
