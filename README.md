@@ -54,7 +54,14 @@ Use the Homebridge UI, or add a platform block to `config.json`:
 | `stateSecret` | yes | `state` credential — used to read current mode state. |
 | `pollInterval` | no | Seconds between `GET /state` polls (default 300, min 15). |
 | `pushPort` | no | Port for instant push from e-note-ion. Omit to poll only. |
-| `pushSecret` | no | Shared secret for push auth. Defaults to `stateSecret`. |
+| `pushSecret` | no | Auto-generated if blank (see below). Or enter your own plaintext secret. |
+
+### Push secret (auto-generated)
+
+Leave `pushSecret` blank and the plugin generates one on startup: it **prints the
+plaintext in the Homebridge log once** and stores only a **hash** back in the
+field. Copy that plaintext into e-note-ion's `[homebridge].secret`. To rotate,
+clear the field and restart — a new secret is generated.
 
 ### Enabling instant push (optional)
 
@@ -64,7 +71,7 @@ e-note-ion's `config.toml`:
 ```toml
 [homebridge]
 url = "http://<homebridge-host>:51828/"
-secret = "<same as pushSecret / stateSecret>"
+secret = "<plaintext printed in the Homebridge log>"
 ```
 
 Without push, the switches still stay in sync within one `pollInterval`.

@@ -47,7 +47,7 @@
       "pushSecret": {
         "title": "Push secret",
         "type": "string",
-        "description": "Optional. Shared secret e-note-ion sends with push updates (X-Webhook-Secret). Defaults to the state secret."
+        "description": "Leave blank to auto-generate: a hash is stored here (not the secret) and the plaintext is printed in the Homebridge log once — copy it into e-note-ion's [homebridge].secret. Clear this field to rotate. You may also enter your own plaintext secret."
       }
     }
   }

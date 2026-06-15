@@ -11,6 +11,7 @@ import {
 import { ENotEionClient } from './client';
 import { VestaboardAccessory } from './platformAccessory';
 import { PushServer } from './pushServer';
+import { generateSecret, hashSecret, isHash, persistHashToConfig, verifySecret } from './secret';
 import { PLATFORM_NAME, PLUGIN_NAME } from './settings';
 
 /**
@@ -27,6 +28,7 @@ export class ENotEionPlatform implements DynamicPlatformPlugin {
   private vestaboard?: VestaboardAccessory;
   private pollTimer?: NodeJS.Timeout;
   private pushServer?: PushServer;
+  private pushSecretHash = '';
 
   constructor(
     public readonly log: Logging,
@@ -54,6 +56,7 @@ export class ENotEionPlatform implements DynamicPlatformPlugin {
 
     this.api.on('didFinishLaunching', () => {
       this.setupAccessory();
+      this.resolvePushSecret();
       this.startPolling();
       this.startPushServer();
     });
@@ -100,15 +103,38 @@ export class ENotEionPlatform implements DynamicPlatformPlugin {
     this.pollTimer = setInterval(() => void this.refresh(), seconds * 1000);
   }
 
+  /**
+   * Resolve the push secret used to authenticate inbound push updates.
+   *
+   * Runs regardless of whether push is enabled. If `pushSecret` is blank, a new
+   * secret is generated, its plaintext logged once (copy it into e-note-ion's
+   * [homebridge].secret), and its hash persisted back to config.json. Clear the
+   * field to rotate. An explicit value is used as-is: an existing hash is reused,
+   * any other value is treated as a user-supplied plaintext.
+   */
+  private resolvePushSecret(): void {
+    const configured = String(this.config.pushSecret || '').trim();
+    if (configured) {
+      this.pushSecretHash = isHash(configured) ? configured : hashSecret(configured);
+      return;
+    }
+    const plaintext = generateSecret();
+    this.pushSecretHash = hashSecret(plaintext);
+    persistHashToConfig(this.api, PLATFORM_NAME, this.pushSecretHash, this.log);
+    this.log.info(`Generated push secret — copy this into e-note-ion [homebridge].secret: ${plaintext}`);
+  }
+
   private startPushServer(): void {
     const port = Number(this.config.pushPort) || 0;
     if (!port) {
       return;
     }
-    const secret = String(this.config.pushSecret || this.config.stateSecret || '');
-    this.pushServer = new PushServer(port, secret, this.log, (characteristic, value) => {
-      this.vestaboard?.updateMode(characteristic, value);
-    });
+    this.pushServer = new PushServer(
+      port,
+      (provided) => verifySecret(provided, this.pushSecretHash),
+      this.log,
+      (characteristic, value) => this.vestaboard?.updateMode(characteristic, value),
+    );
     this.pushServer.start();
   }
 }
