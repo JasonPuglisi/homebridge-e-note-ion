@@ -1,5 +1,5 @@
-import type { SchedulerAction } from './client';
-import type { ModeCharacteristic } from './pushServer';
+import type { SchedulerAction } from './client.js';
+import type { ModeCharacteristic } from './pushServer.js';
 
 /**
  * Map a switch (mode + on/off) to the scheduler webhook action.

@@ -21,3 +21,12 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm test
+
+      # engines declares homebridge "^1.8.0 || ^2.0.0". The devDependency only
+      # pins one of them, so typecheck against the other too — otherwise a type
+      # that changed across the majors ships silently and surfaces as a user
+      # crash. Installed without touching package.json or the lockfile.
+      - name: Typecheck against Homebridge 1
+        run: |
+          npm install --no-save --no-package-lock homebridge@^1.8.0
+          npx tsc --noEmit

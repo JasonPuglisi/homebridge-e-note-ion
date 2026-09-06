@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { generateSecret, hashSecret, isHash, verifySecret } from '../src/secret';
+import { generateSecret, hashSecret, isHash, verifySecret } from '../src/secret.js';
 
 describe('secret', () => {
   it('generates distinct, high-entropy secrets', () => {
