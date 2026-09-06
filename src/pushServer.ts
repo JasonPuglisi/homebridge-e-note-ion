@@ -1,6 +1,6 @@
 import { createServer, Server } from 'node:http';
 
-import { Logging } from 'homebridge';
+import type { Logging } from 'homebridge';
 
 export type ModeCharacteristic = 'quiet' | 'public';
 

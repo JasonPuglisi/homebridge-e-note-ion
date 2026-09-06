@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { afterEach, beforeEach, describe, it } from 'node:test';
 
-import { ENotEionClient } from '../src/client';
+import { ENotEionClient } from '../src/client.js';
 
 // Minimal Logging stub — the client only takes it; tests don't assert on logs.
 const log = { info() {}, warn() {}, error() {}, debug() {}, success() {}, log() {} } as never;

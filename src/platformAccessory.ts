@@ -1,8 +1,8 @@
 import type { CharacteristicValue, PlatformAccessory, Service } from 'homebridge';
 
-import { actionFor } from './modes';
-import type { ENotEionPlatform } from './platform';
-import type { ModeCharacteristic } from './pushServer';
+import { actionFor } from './modes.js';
+import type { ENotEionPlatform } from './platform.js';
+import type { ModeCharacteristic } from './pushServer.js';
 
 /**
  * A single "Vestaboard" accessory exposing two switches — Quiet and Public —

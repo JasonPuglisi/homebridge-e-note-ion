@@ -1,4 +1,4 @@
-import {
+import type {
   API,
   Characteristic,
   DynamicPlatformPlugin,
@@ -8,11 +8,11 @@ import {
   Service,
 } from 'homebridge';
 
-import { ENotEionClient } from './client';
-import { VestaboardAccessory } from './platformAccessory';
-import { PushServer } from './pushServer';
-import { generateSecret, hashSecret, isHash, persistHashToConfig, verifySecret } from './secret';
-import { PLATFORM_NAME, PLUGIN_NAME } from './settings';
+import { ENotEionClient } from './client.js';
+import { VestaboardAccessory } from './platformAccessory.js';
+import { PushServer } from './pushServer.js';
+import { generateSecret, hashSecret, isHash, persistHashToConfig, verifySecret } from './secret.js';
+import { PLATFORM_NAME, PLUGIN_NAME } from './settings.js';
 
 /**
  * Dynamic platform that publishes a single "Vestaboard" accessory and keeps its

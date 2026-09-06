@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { actionFor } from '../src/modes';
+import { actionFor } from '../src/modes.js';
 
 describe('actionFor', () => {
   it('maps the Quiet switch', () => {

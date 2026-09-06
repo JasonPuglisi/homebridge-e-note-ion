@@ -1,7 +1,7 @@
-import { API } from 'homebridge';
+import type { API } from 'homebridge';
 
-import { ENotEionPlatform } from './platform';
-import { PLATFORM_NAME } from './settings';
+import { ENotEionPlatform } from './platform.js';
+import { PLATFORM_NAME } from './settings.js';
 
 /** Entry point — register the dynamic platform with Homebridge. */
 export default (api: API): void => {
