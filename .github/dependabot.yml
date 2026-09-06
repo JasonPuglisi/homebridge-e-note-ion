@@ -6,6 +6,13 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    ignore:
+      # @types/node tracks the LOWEST Node major in engines (currently ^22), not
+      # the newest release. Typechecking against newer types would accept APIs
+      # that do not exist on the oldest runtime we claim to support. Raise this
+      # when engines drops a major, not when a new @types/node ships.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     groups:
       all:
         patterns: ["*"]
