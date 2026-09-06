@@ -14,7 +14,7 @@
   },
   "homepage": "https://github.com/JasonPuglisi/homebridge-e-note-ion#readme",
   "engines": {
-    "node": "^22 || ^24",
+    "node": "^22 || ^24 || ^26",
     "homebridge": "^1.8.0 || ^2.0.0"
   },
   "main": "dist/index.js",
@@ -32,12 +32,11 @@
     "apple-home",
     "homekit"
   ],
-  "dependencies": {},
   "devDependencies": {
-    "@types/node": "^22.10.0",
+    "@types/node": "^22.20.1",
     "homebridge": "^1.8.0",
-    "tsx": "^4.19.0",
-    "typescript": "^5.7.0"
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2"
   },
   "files": [
     "dist",
