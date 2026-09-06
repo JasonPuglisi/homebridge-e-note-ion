@@ -32,12 +32,11 @@
     "apple-home",
     "homekit"
   ],
-  "dependencies": {},
   "devDependencies": {
-    "@types/node": "^22.10.0",
+    "@types/node": "^22.20.1",
     "homebridge": "^1.8.0",
-    "tsx": "^4.19.0",
-    "typescript": "^5.7.0"
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2"
   },
   "files": [
     "dist",
